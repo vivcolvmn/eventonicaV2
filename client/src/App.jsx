@@ -1,8 +1,8 @@
 import React, { useReducer, useEffect } from "react";
-import EventForm from "./components/EventForm";
-import EditEventForm from "./components/EditEventForm";
-import EventFilter from "./components/EventFilter";
-import EventList from "./components/EventList";
+import EventList from './EventList.jsx';
+import EventForm from './EventForm.jsx';
+import EventFilter from './EventFilter.jsx';
+import EditEventForm from './EditEventForm.jsx';
 
 // Initial state
 const initialState = {
