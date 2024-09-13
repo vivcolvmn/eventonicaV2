@@ -12,25 +12,27 @@ app.get("/api/events", (req, res) => {
 });
 
 // Search for events by date, band, or venue
+// Search for events by date, band, or venue
 app.get("/api/events/search", (req, res) => {
   const { date, band, venue } = req.query;
 
   let filteredEvents = eventData;
 
   if (date) {
-    filteredEvents = filteredEvents.filter(event => event.date === date);
+    filteredEvents = filteredEvents.filter(event => event.date.includes(date));
   }
 
   if (band) {
-    filteredEvents = filteredEvents.filter(event => event.band.name === band);
+    filteredEvents = filteredEvents.filter(event => event.band.name.toLowerCase().includes(band.toLowerCase()));
   }
 
   if (venue) {
-    filteredEvents = filteredEvents.filter(event => event.venue.name === venue);
+    filteredEvents = filteredEvents.filter(event => event.venue.name.toLowerCase().includes(venue.toLowerCase()));
   }
 
-  res.json(filteredEvents);
+  res.json(filteredEvents); // Ensure JSON response
 });
+
 
 // Add a new event
 app.post("/api/events", (req, res) => {
