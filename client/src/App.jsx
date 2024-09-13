@@ -51,9 +51,11 @@ const App = () => {
     // Fetch events from API
     fetch("/api/events")
       .then(response => {
+        console.log(`Response: ${response}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+        console.log(response.json());
         return response.json();
       })
       .then(data => dispatch({ type: "SET_EVENTS", payload: data }))

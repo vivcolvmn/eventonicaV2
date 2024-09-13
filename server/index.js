@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import eventData from './eventData.js'
+import { eventData } from './eventData.js'
 
 const app = express();
 app.use(cors());
@@ -15,9 +15,9 @@ app.get("/api/events", (req, res) => {
 // Search for events by date, band, or venue
 app.get("/api/events/search", (req, res) => {
   const { date, band, venue } = req.query;
-
+  cohnsole.log(`The date: ${date} The band: ${band} The venue: ${venue}`);
   let filteredEvents = eventData;
-
+  console.log(filteredEvents);
   if (date) {
     filteredEvents = filteredEvents.filter(event => event.date.includes(date));
   }
