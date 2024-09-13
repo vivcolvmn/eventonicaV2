@@ -15,7 +15,7 @@ app.get("/api/events", (req, res) => {
 // Search for events by date, band, or venue
 app.get("/api/events/search", (req, res) => {
   const { date, band, venue } = req.query;
-  cohnsole.log(`The date: ${date} The band: ${band} The venue: ${venue}`);
+  console.log(`The date: ${date} The band: ${band} The venue: ${venue}`);
   let filteredEvents = eventData;
   console.log(filteredEvents);
   if (date) {

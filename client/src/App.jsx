@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useState } from "react";
+import React, { useReducer, useEffect } from "react";
 import EventList from "./components/EventList.jsx";
 import EventForm from "./components/EventForm.jsx";
 import EventFilter from "./components/EventFilter.jsx";
@@ -48,64 +48,83 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    // Fetch events from API
-    fetch("/api/events")
-      .then(response => {
-        console.log(`Response: ${response}`);
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/events");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return response.json();
-      })
-      .then(data => dispatch({ type: "SET_EVENTS", payload: data }))
-      .catch(error => console.error("Error fetching events:", error));
+        const data = await response.json();
+        dispatch({ type: "SET_EVENTS", payload: data });
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
   }, []);
 
-  const handleAddEvent = (newEvent) => {
-    fetch("/api/events", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newEvent)
-    })
-      .then(response => response.json())
-      .then(data => dispatch({ type: "ADD_EVENT", payload: data }))
-      .catch(error => console.error("Error adding event:", error));
+  const handleAddEvent = async (newEvent) => {
+    try {
+      const response = await fetch("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newEvent),
+      });
+      const data = await response.json();
+      dispatch({ type: "ADD_EVENT", payload: data });
+    } catch (error) {
+      console.error("Error adding event:", error);
+    }
   };
 
-  const handleDeleteEvent = (eventId) => {
-    fetch(`/api/events/${eventId}`, {
-      method: "DELETE",
-    })
-      .then(() => dispatch({ type: "DELETE_EVENT", payload: eventId }))
-      .catch(error => console.error("Error deleting event:", error));
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      await fetch(`/api/events/${eventId}`, {
+        method: "DELETE",
+      });
+      dispatch({ type: "DELETE_EVENT", payload: eventId });
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
   };
 
   const handleEditEvent = (event) => {
     dispatch({ type: "SET_SELECTED_EVENT", payload: event });
   };
 
-  const handleUpdateEvent = (updatedEvent) => {
-    fetch(`/api/events/${updatedEvent.band.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedEvent)
-    })
-      .then(response => response.json())
-      .then(data => dispatch({ type: "UPDATE_EVENT", payload: data }))
-      .catch(error => console.error("Error updating event:", error));
+  const handleUpdateEvent = async (updatedEvent) => {
+    try {
+      const response = await fetch(`/api/events/${updatedEvent.band.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedEvent),
+      });
+      const data = await response.json();
+      dispatch({ type: "UPDATE_EVENT", payload: data });
+    } catch (error) {
+      console.error("Error updating event:", error);
+    }
   };
 
-  const handleFilterEvents = (filters) => {
-    const queryParams = new URLSearchParams(filters).toString(); // Convert filters to query string
-    fetch(`/api/events/search?${queryParams}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => dispatch({ type: "SET_EVENTS", payload: data }))
-      .catch((error) => console.error("Error fetching filtered events:", error));
+  const handleFilterEvents = async (filters) => {
+    const params = new URLSearchParams();
+
+    // Only append non-empty values
+    if (filters.date) params.append('date', filters.date);
+    if (filters.band) params.append('band', filters.band);
+    if (filters.venue) params.append('venue', filters.venue);
+
+    try {
+      const response = await fetch(`/api/events/search?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      dispatch({ type: "SET_EVENTS", payload: data });
+    } catch (error) {
+      console.error("Error fetching filtered events:", error);
+    }
   };
 
   return (
