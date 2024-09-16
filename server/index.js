@@ -12,7 +12,6 @@ app.get("/api/events", (req, res) => {
 });
 
 // Search for events by date, band, or venue
-// Search for events by date, band, or venue
 app.get("/api/events/search", (req, res) => {
   const { date, band, venue } = req.query;
   console.log(`The date: ${date} The band: ${band} The venue: ${venue}`);
