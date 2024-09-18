@@ -1,60 +1,38 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-const EditEventForm = ({ event = {}, onUpdateEvent }) => {
-  const [formData, setFormData] = useState(event || {
-    date: "",
-    time: "",
-    ticketPrice: "",
-    band: { name: "" },
-    venue: { name: "", address: "" }
+const EditEventForm = ({ event, onUpdateEvent, onCancel }) => {
+  const [formData, setFormData] = useState({
+    date: event.date,
+    time: event.time,
+    ticketPrice: event.ticketprice,
+    bandName: event.bandname,
+    venueName: event.venuename,
+    venueAddress: event.venueaddress,
   });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onUpdateEvent(formData);
+    onUpdateEvent({ ...event, ...formData });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>Edit Event</h3>
-      <input
-        type="text"
-        placeholder="Date"
-        value={formData.date || ""}
-        onChange={e => setFormData({ ...formData, date: e.target.value })}
-      />
-      <input
-        type="text"
-        placeholder="Time"
-        value={formData.time || ""}
-        onChange={e => setFormData({ ...formData, time: e.target.value })}
-      />
-      <input
-        type="text"
-        placeholder="Ticket Price"
-        value={formData.ticketPrice || ""}
-        onChange={e => setFormData({ ...formData, ticketPrice: e.target.value })}
-      />
-      <input
-        type="text"
-        placeholder="Band Name"
-        value={formData.band?.name || ""}
-        onChange={e => setFormData({ ...formData, band: { ...formData.band, name: e.target.value } })}
-      />
-      <input
-        type="text"
-        placeholder="Venue Name"
-        value={formData.venue?.name || ""}
-        onChange={e => setFormData({ ...formData, venue: { ...formData.venue, name: e.target.value } })}
-      />
-      <input
-        type="text"
-        placeholder="Venue Address"
-        value={formData.venue?.address || ""}
-        onChange={e => setFormData({ ...formData, venue: { ...formData.venue, address: e.target.value } })}
-      />
-      <button type="submit">Update Event</button>
-    </form>
+    <div>
+      <h2>Edit Event</h2>
+      <form onSubmit={handleSubmit}>
+        <input type="text" name="date" placeholder="Date" value={formData.date} onChange={handleInputChange} required />
+        <input type="text" name="time" placeholder="Time" value={formData.time} onChange={handleInputChange} required />
+        <input type="text" name="ticketPrice" placeholder="Ticket Price" value={formData.ticketPrice} onChange={handleInputChange} required />
+        <input type="text" name="bandName" placeholder="Band Name" value={formData.bandName} onChange={handleInputChange} required />
+        <input type="text" name="venueName" placeholder="Venue Name" value={formData.venueName} onChange={handleInputChange} required />
+        <input type="text" name="venueAddress" placeholder="Venue Address" value={formData.venueAddress} onChange={handleInputChange} required />
+        <button type="submit">Update Event</button>
+        <button type="button" onClick={onCancel}>Cancel</button>
+      </form>
+    </div>
   );
 };
 

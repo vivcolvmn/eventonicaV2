@@ -1,40 +1,46 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-const EventFilter = ({ onFilterEvents }) => {
-  const [filters, setFilters] = useState({
-    date: "",
-    band: "",
-    venue: ""
+const EventFilter = ({ onFilter }) => {
+  const [showFilter, setShowFilter] = useState(false);
+  const [filterData, setFilterData] = useState({
+    date: '',
+    band: '',
+    venue: '',
+    liked: false,
   });
 
-  const handleFilter = (e) => {
+  const handleInputChange = (e) => {
+    setFilterData({ ...filterData, [e.target.name]: e.target.value });
+  };
+
+  const handleCheckboxChange = (e) => {
+    setFilterData({ ...filterData, liked: e.target.checked });
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    onFilterEvents(filters);
+    onFilter(filterData);
   };
 
   return (
-    <form onSubmit={handleFilter}>
-      <h3>Filter Events</h3>
-      <input
-        type="text"
-        placeholder="Date"
-        value={filters.date}
-        onChange={e => setFilters({ ...filters, date: e.target.value })}
-      />
-      <input
-        type="text"
-        placeholder="Band"
-        value={filters.band}
-        onChange={e => setFilters({ ...filters, band: e.target.value })}
-      />
-      <input
-        type="text"
-        placeholder="Venue"
-        value={filters.venue}
-        onChange={e => setFilters({ ...filters, venue: e.target.value })}
-      />
-      <button type="submit">Search</button>
-    </form>
+    <div>
+      <button onClick={() => setShowFilter(!showFilter)}>
+        {showFilter ? 'Hide Filter' : 'Filter Events'}
+      </button>
+
+      {showFilter && (
+        <form onSubmit={handleSubmit}>
+          <input type="text" name="date" placeholder="Date" value={filterData.date} onChange={handleInputChange} />
+          <input type="text" name="band" placeholder="Band" value={filterData.band} onChange={handleInputChange} />
+          <input type="text" name="venue" placeholder="Venue" value={filterData.venue} onChange={handleInputChange} />
+          <label className="inline-label">
+            <span>Liked Events Only</span>
+            <input type="checkbox" name="liked" checked={filterData.liked} onChange={handleCheckboxChange} />
+          </label>
+          <button type="submit">Search</button>
+        </form>
+      )}
+    </div>
   );
 };
 
